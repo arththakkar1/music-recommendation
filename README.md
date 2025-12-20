@@ -129,15 +129,42 @@ tfidf_matrix = vectorizer.fit_transform(text_features)
 For two vectors $\mathbf{A}$ and $\mathbf{B}$ in $n$-dimensional space:
 
 $$
-\text{cosine\_similarity}(\mathbf{A}, \mathbf{B}) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|}
+\text{cosine similarity}(\mathbf{A}, \mathbf{B}) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|} = \frac{\sum_{i=1}^{n} A_i B_i}{\sqrt{\sum_{i=1}^{n} A_i^2} \times \sqrt{\sum_{i=1}^{n} B_i^2}}
 $$
+
+Where:
+
+- $\mathbf{A} \cdot \mathbf{B}$ = dot product of vectors $\mathbf{A}$ and $\mathbf{B}$
+- $\|\mathbf{A}\|$ = Euclidean norm (L2 norm) of vector $\mathbf{A}$
+- $\|\mathbf{B}\|$ = Euclidean norm (L2 norm) of vector $\mathbf{B}$
 
 #### Properties
 
-- **Range:** $-1 \leq \text{cosine\_similarity}(\mathbf{A}, \mathbf{B}) \leq 1$
-- **Magnitude Independence:** Focuses on orientation, not magnitude.
+1. **Range:** $-1 \leq \text{cosine similarity}(\mathbf{A}, \mathbf{B}) \leq 1$
+
+   - $1$ : vectors point in the same direction (identical)
+   - $0$ : vectors are orthogonal (no similarity)
+   - $-1$ : vectors point in opposite directions (completely dissimilar)
+
+2. **Magnitude Independence:** Cosine similarity focuses on orientation rather than magnitude, making it ideal for text comparison where document length varies.
 
 #### Geometric Interpretation
+
+Consider two songs represented as vectors in TF-IDF space:
+
+$$
+\mathbf{v}_{\text{song1}} = [0.5, 0.8, 0.3, 0.0, 0.1]
+$$
+
+$$
+\mathbf{v}_{\text{song2}} = [0.4, 0.9, 0.2, 0.0, 0.15]
+$$
+
+The cosine similarity measures the angle $\theta$ between these vectors:
+
+$$
+\cos(\theta) = \text{cosine similarity}(\mathbf{v}_{\text{song1}}, \mathbf{v}_{\text{song2}})
+$$
 
 A smaller angle (closer to 0°) indicates higher similarity, while a larger angle (closer to 90°) indicates lower similarity.
 
@@ -148,16 +175,25 @@ Given:
 - $\mathbf{A} = [3, 4, 0]$
 - $\mathbf{B} = [4, 3, 0]$
 
-$$
-\mathbf{A} \cdot \mathbf{B} = 24 \\
-\|\mathbf{A}\| = 5 \\
-\|\mathbf{B}\| = 5 \\
-\text{cosine\_similarity} = \frac{24}{25} = 0.96
-$$
+Calculate:
+
+1. **Dot Product:**
+   $$\mathbf{A} \cdot \mathbf{B} = (3 \times 4) + (4 \times 3) + (0 \times 0) = 24$$
+
+2. **Magnitudes:**
+   $$\|\mathbf{A}\| = \sqrt{3^2 + 4^2 + 0^2} = \sqrt{25} = 5$$
+   $$\|\mathbf{B}\| = \sqrt{4^2 + 3^2 + 0^2} = \sqrt{25} = 5$$
+
+3. **Cosine Similarity:**
+   $$\text{cosine similarity}(\mathbf{A}, \mathbf{B}) = \frac{24}{5 \times 5} = \frac{24}{25} = 0.96$$
+
+**Interpretation:** A score of 0.96 indicates very high similarity between the two vectors.
 
 ---
 
 ### Recommendation Algorithm
+
+The recommendation pipeline consists of three main stages:
 
 #### Stage 1: Feature Extraction
 
@@ -177,14 +213,27 @@ Where:
 For a query song $q$ and all songs in database $D$:
 
 $$
-\text{similarity}(q, s_i) = \text{cosine\_similarity}(\mathbf{F}_q, \mathbf{F}_{s_i}) \quad \forall s_i \in D
+\text{similarity}(q, s_i) = \text{cosine similarity}(\mathbf{F}_q, \mathbf{F}_{s_i}) \quad \forall s_i \in D
 $$
+
+This produces a similarity score for each song in the database.
 
 #### Stage 3: Ranking and Filtering
 
-- Rank songs by similarity score
-- Remove duplicates and the query song itself
-- Apply pagination
+1. **Rank songs by similarity score:**
+   $$R = \{(s_i, \text{similarity}(q, s_i)) : s_i \in D, s_i \neq q\}$$
+
+2. **Sort in descending order:**
+   $$R_{\text{sorted}} = \text{sort}(R, \text{key}=\text{similarity}, \text{order}=\text{desc})$$
+
+3. **Apply filters and remove duplicates:**
+
+   - Filter out the query song itself
+   - Remove duplicate track-artist pairs
+   - Apply pagination
+
+4. **Return top-k recommendations:**
+   $$\text{Recommendations} = R_{\text{sorted}}[0:k]$$
 
 ---
 

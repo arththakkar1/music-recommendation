@@ -479,3 +479,13 @@ frontend/
 
 - API response caching per song and page
 - Skeleton loading
+
+## Screenshots
+
+![Screenshots 1](screenshots/1.png)
+
+![Screenshots 2](screenshots/2.png)
+
+![Screenshots 3](screenshots/3.png)
+
+![Screenshots 3](screenshots/4.png)

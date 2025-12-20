@@ -54,7 +54,7 @@ export default function RecommendationList({
                 key={i}
                 className="bg-black border border-white/10 rounded-2xl p-5 hover:border-white/20 hover:bg-white/5 transition-all cursor-pointer group flex gap-4"
               >
-                <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-white/10 transition-colors">
+                <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-white/10 transition-colors">
                   <Music2 className="w-6 h-6 text-white/70" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -76,7 +76,7 @@ export default function RecommendationList({
                   </div>
                 </div>
                 {song.score !== undefined && (
-                  <div className="flex-shrink-0 px-3 py-1 bg-white/5 rounded-lg self-start">
+                  <div className="shrink-0 px-3 py-1 bg-white/5 rounded-lg self-start">
                     <span className="text-white/70 text-sm font-medium">
                       {Math.round(song.score * 100)}%
                     </span>

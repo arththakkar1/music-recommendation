@@ -1,0 +1,76 @@
+Music Recommendation System – PPTX Outline
+
+1. Title
+   - Music Recommendation System
+   - Personalized Song Discovery Using Machine Learning
+   - Author: arththakkar1
+
+2. Project Overview
+   - Full-stack web application for music recommendations
+   - Combines Python (Flask) backend and React/Next.js frontend
+   - Uses machine learning for content-based filtering and similarity matching
+
+3. Key Features
+   - Real-time song search with fuzzy matching
+   - Content-based recommendation engine
+   - Paginated, grid-based results with duplicate removal
+   - Audio feature integration (danceability, energy, valence, etc.)
+   - Responsive UI with skeleton loading and caching
+
+4. System Architecture
+   - Modular, layered design:
+     - Frontend: React/Next.js, TypeScript, Tailwind CSS
+     - API Layer: Flask RESTful endpoints
+     - Service Layer: Business logic and orchestration
+     - ML Layer: Feature engineering and similarity computation
+     - Data Layer: Data loading and preprocessing
+   - (Include architecture diagram from README)
+
+5. Data Pipeline
+   - Loads Spotify dataset (CSV) with rich metadata
+   - Preprocessing and feature extraction
+   - Textual features: track name, artist, genre
+   - Audio features: danceability, energy, valence, etc.
+
+6. Machine Learning Concepts
+   - TF-IDF Vectorization
+     - Converts song text to numerical vectors
+     - Formula: TFIDF_{t,d} = TF_{t,d} × IDF_t
+   - Cosine Similarity
+     - Measures similarity between song vectors
+     - Formula: cosine_similarity(A, B) = (A · B) / (||A|| ||B||)
+
+7. Recommendation Workflow
+   1. User selects or searches for a song
+   2. Backend vectorizes query and computes similarity scores
+   3. Top matches are ranked and filtered for duplicates
+   4. Results are paginated and sent to frontend
+
+8. API Endpoints
+   - /songs: Random sample of songs
+   - /search: Search songs by query
+   - /recommend: Get recommendations for a selected song (supports pagination)
+
+9. Frontend Features
+   - Responsive grid layout for recommendations
+   - Skeleton loading for smooth UX
+   - Caching for fast navigation
+   - Integration with Flask backend
+
+10. Screenshots
+    - (Add screenshots from your screenshots/ folder: Home, Search, Recommendations Grid)
+
+11. Performance Optimizations
+    - Backend: In-memory caching, efficient numpy operations
+    - Frontend: API response caching, debounced search input
+
+12. How to Run
+    Backend:
+      - pip install -r requirements.txt
+      - flask run
+    Frontend:
+      - npm install
+      - npm run dev
+
+13. Ending
+    - Thank you

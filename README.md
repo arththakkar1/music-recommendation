@@ -488,4 +488,4 @@ frontend/
 
 ![Screenshots 3](screenshots/3.png)
 
-![Screenshots 3](screenshots/4.png)
+![Screenshots 4](screenshots/4.png)

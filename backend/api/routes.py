@@ -1,6 +1,4 @@
 from flask import Blueprint, request, jsonify
-from core.config import Config
-from core.exceptions import DataNotFoundException
 
 api = Blueprint("api", __name__)
 
@@ -24,7 +22,7 @@ def list_songs():
 def search_songs():
     query = request.args.get("q", "").strip()
     page = int(request.args.get("page", 1))
-    per_page = int(request.args.get("per_page", 5))  # Make sure this is 5 by default
+    per_page = int(request.args.get("per_page", 5))
 
     if not query:
         return jsonify([])
@@ -52,7 +50,6 @@ def search_songs():
             "score": round(float(scores[idx]), 4)
         })
 
-    # Pagination
     start = (page - 1) * per_page
     end = start + per_page
     paginated_results = results[start:end]

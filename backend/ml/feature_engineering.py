@@ -5,5 +5,6 @@ class FeatureEngineer:
         self.features = features
         self.scaler = StandardScaler()
 
-    def prepare_features(self, df):
+    def prepare_features(self, df): 
         return self.scaler.fit_transform(df[self.features])
+ 

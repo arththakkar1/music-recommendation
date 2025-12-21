@@ -42,7 +42,7 @@ app.register_blueprint(api)
 
 @app.route("/")
 def home():
-    return {"status": "Music Recommendation API running 🎧"}
+    return {"status": "Music Recommendation API running "}
 
 if __name__ == "__main__":
     app.run(debug=True)

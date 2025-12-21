@@ -23,7 +23,7 @@ export default function RecommendationList({
   totalPages: number;
   loading?: boolean;
 }) {
-  const skeletons = Array.from({ length: 10 });
+  const skeletons = Array.from({ length: 5 });
 
   return (
     <div className="mt-8 w-full max-w-2xl mx-auto">

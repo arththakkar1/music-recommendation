@@ -7,7 +7,7 @@ api = Blueprint("api", __name__)
 @api.route("/songs", methods=["GET"])
 def list_songs():
     df = api.df
-    sample_df = df.sample(25)
+    sample_df = df.sample(10)
     songs = []
     for _, row in sample_df.iterrows():
         songs.append({
@@ -23,6 +23,8 @@ def list_songs():
 @api.route("/search", methods=["GET"])
 def search_songs():
     query = request.args.get("q", "").strip()
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 5))  # Make sure this is 5 by default
 
     if not query:
         return jsonify([])
@@ -50,10 +52,12 @@ def search_songs():
             "score": round(float(scores[idx]), 4)
         })
 
-        if len(results) >= 20:
-            break
+    # Pagination
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated_results = results[start:end]
 
-    return jsonify(results)
+    return jsonify(paginated_results)
 
 
 

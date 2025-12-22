@@ -46,15 +46,15 @@ export default function SongSearch({
       return;
     }
 
-    const delay = setTimeout(async () => {
+    const Search = async () => {
       setLoading(true);
       const data = await searchSongs(query, searchPage, perPage);
       setResults(data);
       setLoading(false);
       onSearch && onSearch(query, searchPage);
-    }, 300);
+    };
 
-    return () => clearTimeout(delay);
+    Search();
   }, [query, searchPage]);
 
   useEffect(() => {

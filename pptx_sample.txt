@@ -19,7 +19,7 @@ Music Recommendation System – PPTX Outline
 
 4. System Architecture
    - Modular, layered design:
-     - Frontend: React/Next.js, TypeScript, Tailwind CSS
+     - Frontend: Next.js, TypeScript, Tailwind CSS
      - API Layer: Flask RESTful endpoints
      - Service Layer: Business logic and orchestration
      - ML Layer: Feature engineering and similarity computation

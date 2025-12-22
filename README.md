@@ -476,9 +476,15 @@ frontend/
 ## Screenshots
 
 ![Screenshots 1](screenshots/1.png)
-
 ![Screenshots 2](screenshots/2.png)
-
 ![Screenshots 3](screenshots/3.png)
-
 ![Screenshots 4](screenshots/4.png)
+
+---
+
+## Presentation
+
+You can view the project presentation slides here:  
+[Music Recommendation System – PPTX (Figma)](https://www.figma.com/slides/lnNLyljGko9aJKOMZwRsJH/Python-Project?node-id=1-266&t=H7UaeHJPys2T71m1-1)
+
+---

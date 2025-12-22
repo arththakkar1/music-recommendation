@@ -343,7 +343,7 @@ frontend/
 1. **Clone the repository:**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/arththakkar1/music-recommendation.git
    cd music-recommendation-system/backend
    ```
 
@@ -360,17 +360,10 @@ frontend/
    pip install -r requirements.txt
    ```
 
-4. **Configure environment variables:**
+4. **Run the application:**
 
    ```bash
-   export FLASK_APP=app.py
-   export FLASK_ENV=development
-   ```
-
-5. **Run the application:**
-
-   ```bash
-   flask run
+   python app.py
    ```
 
    The API will be available at `http://localhost:5000`

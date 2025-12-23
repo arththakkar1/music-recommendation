@@ -1,27 +1,18 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { Search, Loader2 } from "lucide-react";
+import { searchSongs, recommendSong } from "@/lib/api";
 
 type Recommendation = {
   track_name: string;
   artist: string;
-  album?: string;
-  release_year?: string;
-  genre?: string;
-  popularity?: number;
-  score?: number;
 };
 
-import { searchSongs, recommendSong } from "@/lib/api";
-
-type SearchResult = {
-  track_name: string;
-  artist: string;
+type SearchResult = Recommendation & {
   album?: string;
   release_year?: string;
   genre?: string;
   popularity?: number;
-  score?: number;
 };
 
 export default function SongSearch({
@@ -46,111 +37,101 @@ export default function SongSearch({
       return;
     }
 
-    const Search = async () => {
+    const run = async () => {
       setLoading(true);
       const data = await searchSongs(query, searchPage, perPage);
       setResults(data);
       setLoading(false);
-      onSearch && onSearch(query, searchPage);
+      onSearch(query, searchPage);
     };
 
-    Search();
+    run();
   }, [query, searchPage]);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handler = (e: MouseEvent) => {
       if (
         containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        !containerRef.current.contains(e.target as Node)
       ) {
         setIsFocused(false);
       }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   async function handleSelect(song: string) {
     setQuery(song);
     setResults([]);
     setIsFocused(false);
-    setSearchPage(1);
     const res = await recommendSong(song);
     onRecommend(res.recommendations || []);
   }
 
-  function handlePrevPage() {
-    if (searchPage > 1) setSearchPage(searchPage - 1);
-  }
-
-  function handleNextPage() {
-    if (results.length === perPage) setSearchPage(searchPage + 1);
-  }
-
-  // Reset to first page when query changes
-  useEffect(() => {
-    setSearchPage(1);
-  }, [query]);
-
   return (
     <div ref={containerRef} className="relative w-full max-w-2xl mx-auto">
+      {/* Input */}
       <div className="relative">
-        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#222222]" />
+
         <input
-          type="text"
-          placeholder="Search for a song..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          className="w-full bg-black text-white border border-white/10 rounded-2xl pl-14 pr-6 py-5 text-lg outline-none focus:border-white/30 transition-all placeholder:text-white/30"
+          placeholder="Search for a song you love…"
+          className="w-full rounded-2xl px-14 py-5 text-lg bg-white text-gray-900 border border-black/10 focus:border-black/60 focus:ring-4 focus:ring-[#3A2A23]/20 outline-none transition-all"
         />
+
         {loading && (
-          <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 animate-spin" />
+          <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#7B3F00] animate-spin" />
         )}
       </div>
 
+      {/* Dropdown */}
       {isFocused && results.length > 0 && (
-        <div className="absolute left-0 right-0 mt-3 bg-black border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 backdrop-blur-xl">
+        <div className="absolute left-0 right-0 mt-3 bg-white border border-black/10 rounded-2xl shadow-xl overflow-hidden z-50">
           <ul className="max-h-80 overflow-y-auto">
             {results.map((song, i) => (
               <li
                 key={i}
                 onClick={() => handleSelect(song.track_name)}
-                className="px-6 py-4 cursor-pointer hover:bg-white/5 transition-colors text-white border-b border-white/5 last:border-b-0 active:bg-white/10"
+                className="px-6 py-4 cursor-pointer hover:bg-purple-50 transition border-b last:border-none"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center">
-                    <Search className="w-4 h-4 text-white/50" />
+                  <div className="w-10 h-10 rounded-lg bg-[#3A2A23] flex items-center justify-center">
+                    <Search className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-base">{song.track_name}</span>
-                  <span className="text-base">{song.artist}</span>
-                  {/* Show more info */}
-                  <span className="text-xs text-white/30 ml-2">
-                    {song.album && `Album: ${song.album} `}
-                    {song.release_year && `Year: ${song.release_year} `}
-                    {song.genre && `Genre: ${song.genre} `}
-                    {song.popularity !== undefined &&
-                      `Popularity: ${song.popularity}`}
-                  </span>
+
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-900 truncate">
+                      {song.track_name}
+                    </p>
+                    <p className="text-sm text-gray-600 truncate">
+                      {song.artist}
+                    </p>
+                  </div>
                 </div>
               </li>
             ))}
           </ul>
-          {/* Pagination controls */}
-          <div className="flex justify-between items-center px-6 py-2 bg-black border-t border-white/10">
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center px-6 py-2 bg-gray-50">
             <button
-              className="px-3 py-1 rounded bg-white/10 text-white disabled:opacity-50"
-              onClick={handlePrevPage}
-              disabled={searchPage <= 1 || loading}
+              onClick={() => setSearchPage((p) => Math.max(1, p - 1))}
+              disabled={searchPage <= 1}
+              className="px-4 py-1 rounded-full bg-gray-200 text-gray-700 disabled:opacity-40"
             >
               Prev
             </button>
-            <span className="text-white/70 text-sm">Page {searchPage}</span>
+
+            <span className="text-sm text-gray-600">Page {searchPage}</span>
+
             <button
-              className="px-3 py-1 rounded bg-white/10 text-white disabled:opacity-50"
-              onClick={handleNextPage}
-              disabled={results.length < perPage || loading}
+              onClick={() => setSearchPage((p) => p + 1)}
+              disabled={results.length < perPage}
+              className="px-4 py-1 rounded-full bg-[#00009b] text-white disabled:opacity-40"
             >
               Next
             </button>
@@ -158,16 +139,17 @@ export default function SongSearch({
         </div>
       )}
 
-      {isFocused && loading && results.length === 0 && query.length >= 2 && (
-        <div className="absolute left-0 right-0 mt-3 bg-black border border-white/10 rounded-2xl p-6 text-white/50 text-center">
-          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-          <p>Searching...</p>
+      {/* Empty states */}
+      {isFocused && loading && (
+        <div className="absolute mt-3 w-full bg-white rounded-2xl p-6 text-center shadow">
+          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 bg-[#7B3F00]" />
+          <p className="text-gray-500">Searching…</p>
         </div>
       )}
 
-      {isFocused && !loading && results.length === 0 && query.length >= 2 && (
-        <div className="absolute left-0 right-0 mt-3 bg-black border border-white/10 rounded-2xl p-6 text-white/40 text-center">
-          No results found
+      {isFocused && !loading && query.length >= 2 && results.length === 0 && (
+        <div className="absolute mt-3 w-full bg-white rounded-2xl p-6 text-center shadow">
+          <p className="text-gray-500">No results found</p>
         </div>
       )}
     </div>

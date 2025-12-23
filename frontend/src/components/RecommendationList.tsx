@@ -26,45 +26,55 @@ export default function RecommendationList({
   const skeletons = Array.from({ length: 5 });
 
   return (
-    <div className="mt-8 w-full max-w-2xl mx-auto">
+    <div className="mt-10 w-full max-w-2xl mx-auto">
+      {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-[#3A2A23] flex items-center justify-center shadow-md">
           <TrendingUp className="w-5 h-5 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-white">Recommended Songs</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Recommended Songs</h2>
       </div>
 
+      {/* Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {loading
           ? skeletons.map((_, i) => (
               <div
                 key={i}
-                className="animate-pulse bg-black border border-white/10 rounded-2xl p-5 flex gap-4"
+                className="animate-pulse bg-white rounded-2xl p-5 flex gap-4 shadow-sm"
               >
-                <div className="w-12 h-12 bg-white/10 rounded-xl" />
+                <div className="w-12 h-12 bg-gray-200 rounded-xl" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-5 bg-white/10 rounded w-3/4" />
-                  <div className="h-4 bg-white/10 rounded w-1/2" />
-                  <div className="h-3 bg-white/10 rounded w-1/3 mt-2" />
+                  <div className="h-5 bg-gray-200 rounded w-3/4" />
+                  <div className="h-4 bg-gray-200 rounded w-1/2" />
+                  <div className="h-3 bg-gray-200 rounded w-1/3" />
                 </div>
               </div>
             ))
           : data.map((song, i) => (
               <div
                 key={i}
-                className="bg-black border border-white/10 rounded-2xl p-5 hover:border-white/20 hover:bg-white/5 transition-all cursor-pointer group flex gap-4"
+                className="
+                  bg-white rounded-2xl p-5 flex gap-4 cursor-pointer
+                  shadow-sm hover:shadow-xl hover:-translate-y-1
+                  transition-all
+                "
               >
-                <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-white/10 transition-colors">
-                  <Music2 className="w-6 h-6 text-white/70" />
+                {/* Icon */}
+                <div className="w-12 h-12 rounded-xl bg-[#3A2A23] flex items-center justify-center shrink-0">
+                  <Music2 className="w-6 h-6 text-white" />
                 </div>
+
+                {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-white text-lg truncate">
+                  <h3 className="font-semibold text-gray-900 text-lg truncate">
                     {song.track_name}
                   </h3>
-                  <p className="text-white/50 text-sm truncate">
+                  <p className="text-gray-600 text-sm truncate">
                     {song.artist}
                   </p>
-                  <div className="text-white/30 text-xs mt-1 flex gap-2 flex-wrap">
+
+                  <div className="text-gray-500 text-xs mt-1 flex gap-2 flex-wrap">
                     {song.album && <span>Album: {song.album}</span>}
                     {song.release_year && (
                       <span>Year: {song.release_year}</span>
@@ -75,30 +85,33 @@ export default function RecommendationList({
                     )}
                   </div>
                 </div>
+
+                {/* Score */}
                 {song.score !== undefined && (
-                  <div className="shrink-0 px-3 py-1 bg-white/5 rounded-lg self-start">
-                    <span className="text-white/70 text-sm font-medium">
-                      {Math.round(song.score * 100)}%
-                    </span>
+                  <div className="shrink-0 self-start px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-semibold">
+                    {Math.round(song.score * 100)}%
                   </div>
                 )}
               </div>
             ))}
       </div>
 
-      <div className="flex justify-center mt-6 gap-2">
+      {/* Pagination */}
+      <div className="flex justify-center mt-8 gap-3">
         <button
-          className="px-3 py-1 rounded bg-white/10 text-white disabled:opacity-50"
+          className="px-4 py-1.5 rounded-full bg-[#3A2A23] text-white cursor-pointer disabled:opacity-40"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1 || loading}
         >
           Prev
         </button>
-        <span className="px-3 py-1 text-white/70">
+
+        <span className="px-3 py-1 text-gray-600 text-sm">
           Page {page} of {totalPages}
         </span>
+
         <button
-          className="px-3 py-1 rounded bg-white/10 text-white disabled:opacity-50"
+          className="px-4 py-1.5 rounded-full bg-[#3A2A23] cursor-pointer text-white disabled:opacity-40"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages || loading}
         >

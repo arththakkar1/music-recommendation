@@ -41,13 +41,13 @@ export default function Home() {
     }
   }, [mode, page]);
 
-  // Handler for search
-  async function handleSearch(query: string, searchPage: number) {
+  // Handler for search (no pagination)
+  async function handleSearch(query: string) {
     setMode("search");
     setSearchQuery(query);
-    setPage(searchPage);
+    setPage(1);
     setLoading(true);
-    const data = await searchSongs(query, searchPage, perPage);
+    const data = await searchSongs(query); // No page/perPage
     setRecommendations(data);
     setLoading(false);
   }
@@ -63,7 +63,6 @@ export default function Home() {
     cache.current[songKey] = { 1: recs };
   }
 
-  // Pagination handler
   async function handlePageChange(newPage: number) {
     setPage(newPage);
     setLoading(true);
@@ -71,9 +70,6 @@ export default function Home() {
     if (mode === "default") {
       const songs = await fetchSongs(newPage, perPage);
       setRecommendations(songs);
-    } else if (mode === "search") {
-      const data = await searchSongs(searchQuery, newPage, perPage);
-      setRecommendations(data);
     } else if (mode === "recommend" && selectedSong) {
       const songCache = cache.current[selectedSong] || {};
       if (songCache[newPage]) {
@@ -88,6 +84,7 @@ export default function Home() {
         [newPage]: res.recommendations || [],
       };
     }
+    // Remove search mode pagination
     setLoading(false);
   }
 
@@ -96,7 +93,7 @@ export default function Home() {
       <Header />
       <SongSearch
         onRecommend={(recs, song) => handleRecommend(recs, song)}
-        onSearch={handleSearch}
+        onSearch={handleSearch} // Now only passes query
       />
       <RecommendationList
         data={recommendations}

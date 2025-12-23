@@ -1,11 +1,7 @@
 const API_URL = "http://127.0.0.1:5000";
 
-export async function searchSongs(query: string, page = 1, per_page = 5) {
-  const res = await fetch(
-    `${API_URL}/search?q=${encodeURIComponent(
-      query
-    )}&page=${page}&per_page=${per_page}`
-  );
+export async function searchSongs(query: string) {
+  const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`);
   return res.json();
 }
 

@@ -20,33 +20,30 @@ export default function SongSearch({
   onSearch,
 }: {
   onRecommend: (recs: Recommendation[], song?: string) => void;
-  onSearch: (query: string, page: number) => void;
+  onSearch: (query: string) => void;
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [searchPage, setSearchPage] = useState(1);
-  const perPage = 5;
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (query.length < 2) {
       setResults([]);
-      setSearchPage(1);
       return;
     }
 
     const run = async () => {
       setLoading(true);
-      const data = await searchSongs(query, searchPage, perPage);
+      const data = await searchSongs(query);
       setResults(data);
       setLoading(false);
-      onSearch(query, searchPage);
+      onSearch(query);
     };
 
     run();
-  }, [query, searchPage]);
+  }, [query]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -91,7 +88,7 @@ export default function SongSearch({
       {/* Dropdown */}
       {isFocused && results.length > 0 && (
         <div className="absolute left-0 right-0 mt-3 bg-white border border-black/10 rounded-2xl shadow-xl overflow-hidden z-50">
-          <ul className="max-h-80 overflow-y-auto">
+          <ul className="max-h-80 overflow-y-auto scrollbar-none">
             {results.map((song, i) => (
               <li
                 key={i}
@@ -115,27 +112,6 @@ export default function SongSearch({
               </li>
             ))}
           </ul>
-
-          {/* Pagination */}
-          <div className="flex justify-between items-center px-6 py-2 bg-gray-50">
-            <button
-              onClick={() => setSearchPage((p) => Math.max(1, p - 1))}
-              disabled={searchPage <= 1}
-              className="px-4 py-1 rounded-full bg-gray-200 text-gray-700 disabled:opacity-40"
-            >
-              Prev
-            </button>
-
-            <span className="text-sm text-gray-600">Page {searchPage}</span>
-
-            <button
-              onClick={() => setSearchPage((p) => p + 1)}
-              disabled={results.length < perPage}
-              className="px-4 py-1 rounded-full bg-[#00009b] text-white disabled:opacity-40"
-            >
-              Next
-            </button>
-          </div>
         </div>
       )}
 

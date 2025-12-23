@@ -21,8 +21,6 @@ def list_songs():
 @api.route("/search", methods=["GET"])
 def search_songs():
     query = request.args.get("q", "").strip()
-    page = int(request.args.get("page", 1))
-    per_page = int(request.args.get("per_page", 5))
 
     if not query:
         return jsonify([])
@@ -50,13 +48,8 @@ def search_songs():
             "score": round(float(scores[idx]), 4)
         })
 
-    start = (page - 1) * per_page
-    end = start + per_page
-    paginated_results = results[start:end]
-
-    return jsonify(paginated_results)
-
-
+    # Return only the top 10 results
+    return jsonify(results[:10])
 
 @api.route("/recommend", methods=["POST"])
 def recommend_song():

@@ -5,7 +5,7 @@ export async function searchSongs(query: string) {
   return res.json();
 }
 
-export async function recommendSong(song: string, page = 1, per_page = 5) {
+export async function recommendSong(song: string, page = 1, per_page = 6) {
   const res = await fetch(`${API_URL}/recommend`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -14,7 +14,7 @@ export async function recommendSong(song: string, page = 1, per_page = 5) {
   return res.json();
 }
 
-export async function fetchSongs(page = 1, per_page = 5) {
+export async function fetchSongs(page = 1, per_page = 6) {
   const res = await fetch(`${API_URL}/songs?page=${page}&per_page=${per_page}`);
   return res.json();
 }

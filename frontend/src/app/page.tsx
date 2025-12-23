@@ -25,7 +25,7 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const perPage = 5;
+  const perPage = 6;
 
   // For caching recommendations per song and page
   const cache = useRef<Record<string, Record<number, Recommendation[]>>>({});
@@ -41,7 +41,7 @@ export default function Home() {
     }
   }, [mode, page]);
 
-  // Handler for search (no pagination)
+  // Handler for search
   async function handleSearch(query: string) {
     setMode("search");
     setSearchQuery(query);

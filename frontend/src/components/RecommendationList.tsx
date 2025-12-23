@@ -23,7 +23,7 @@ export default function RecommendationList({
   totalPages: number;
   loading?: boolean;
 }) {
-  const skeletons = Array.from({ length: 5 });
+  const skeletons = Array.from({ length: 6 });
 
   return (
     <div className="mt-10 w-full max-w-2xl mx-auto">
@@ -87,11 +87,25 @@ export default function RecommendationList({
                 </div>
 
                 {/* Score */}
-                {song.score !== undefined && (
-                  <div className="shrink-0 self-start px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-semibold">
-                    {Math.round(song.score * 100)}%
-                  </div>
-                )}
+                {song.score !== undefined &&
+                  (() => {
+                    const score = Math.round(song.score * 100);
+
+                    const color =
+                      score >= 96
+                        ? "bg-green-100 text-green-700"
+                        : score >= 60
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-red-100 text-red-700";
+
+                    return (
+                      <div
+                        className={`shrink-0 self-start px-3 py-1 rounded-full text-sm font-semibold ${color}`}
+                      >
+                        {score}%
+                      </div>
+                    );
+                  })()}
               </div>
             ))}
       </div>

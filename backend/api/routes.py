@@ -48,7 +48,6 @@ def search_songs():
             "score": round(float(scores[idx]), 4)
         })
 
-    # Return only the top 10 results
     return jsonify(results[:10])
 
 @api.route("/recommend", methods=["POST"])

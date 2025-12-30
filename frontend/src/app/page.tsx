@@ -27,10 +27,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const perPage = 6;
 
-  // For caching recommendations per song and page
   const cache = useRef<Record<string, Record<number, Recommendation[]>>>({});
 
-  // Handle default song list
   useEffect(() => {
     if (mode === "default") {
       setLoading(true);

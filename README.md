@@ -25,28 +25,28 @@ The system follows a modular, layered architecture:
 
 ```
 ┌─────────────────────────────────────┐
-│         Frontend (React/Next.js)    │
-│    TypeScript + Tailwind CSS        │
+│      Frontend (React/Next.js)       │
+│      TypeScript + Tailwind CSS      │
 └──────────────┬──────────────────────┘
                │ HTTP/REST
 ┌──────────────▼──────────────────────┐
-│      API Layer (Flask)              │
-│    RESTful Endpoints                │
+│          API Layer (Flask)          │
+│          RESTful Endpoints          │
 └──────────────┬──────────────────────┘
                │
 ┌──────────────▼──────────────────────┐
-│    Service Layer                    │
-│  Business Logic & Orchestration     │
+│           Service Layer             │
+│    Business Logic & Orchestration   │
 └──────────────┬──────────────────────┘
                │
 ┌──────────────▼──────────────────────┐
-│    ML Layer                         │
-│  Feature Engineering & Similarity   │
+│            ML Layer                 │
+│   Feature Engineering & Similarity  │
 └──────────────┬──────────────────────┘
                │
 ┌──────────────▼──────────────────────┐
-│    Data Layer                       │
-│  Data Loading & Preprocessing       │
+│           Data Layer                │
+│    Data Loading & Preprocessing     │
 └─────────────────────────────────────┘
 ```
 

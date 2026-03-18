@@ -141,7 +141,6 @@ Where:
 #### Properties
 
 1. **Range:** $-1 \leq \text{cosine similarity}(\mathbf{A}, \mathbf{B}) \leq 1$
-
    - $1$ : vectors point in the same direction (identical)
    - $0$ : vectors are orthogonal (no similarity)
    - $-1$ : vectors point in opposite directions (completely dissimilar)
@@ -227,7 +226,6 @@ This produces a similarity score for each song in the database.
    $$R_{\text{sorted}} = \text{sort}(R, \text{key}=\text{similarity}, \text{order}=\text{desc})$$
 
 3. **Apply filters and remove duplicates:**
-
    - Filter out the query song itself
    - Remove duplicate track-artist pairs
    - Apply pagination
@@ -479,6 +477,7 @@ frontend/
 ![Screenshots 2](screenshots/2.png)
 ![Screenshots 3](screenshots/3.png)
 ![Screenshots 4](screenshots/4.png)
+![Screenshots 5](screenshots/5.png)
 
 ---
 

@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header className="text-center mb-14">
       <div className="inline-flex items-center gap-4 mb-5">
-        <div className="w-14 h-14 rounded-2xl bg-[#3A2A23] flex items-center justify-center shadow-lg">
+        <div className="w-14 h-14 rounded-xl bg-[#3A2A23] flex items-center justify-center shadow-lg">
           <Music className="w-7 h-7 text-white" />
         </div>
 

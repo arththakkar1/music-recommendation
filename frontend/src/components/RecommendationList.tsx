@@ -41,14 +41,31 @@ export default function RecommendationList({
           ? skeletons.map((_, i) => (
               <div
                 key={i}
-                className="animate-pulse bg-white rounded-2xl p-5 flex gap-4 shadow-sm"
+                className="
+                  animate-pulse bg-white rounded-2xl p-5 py-7 flex gap-4
+                  shadow-sm
+                "
               >
-                <div className="w-12 h-12 bg-gray-200 rounded-xl" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-5 bg-gray-200 rounded w-3/4" />
-                  <div className="h-4 bg-gray-200 rounded w-1/2" />
-                  <div className="h-3 bg-gray-200 rounded w-1/3" />
+                {/* Icon Placeholder */}
+                <div className="w-12 h-12 rounded-xl bg-gray-200 shrink-0"></div>
+
+                {/* Content Placeholder */}
+                <div className="flex-1 min-w-0 space-y-3 mt-1">
+                  {/* Title Placeholder */}
+                  <div className="h-5 bg-gray-200 rounded w-3/4"></div>
+                  {/* Artist Placeholder */}
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+
+                  {/* Tags Placeholder */}
+                  <div className="flex gap-2 flex-wrap mt-2">
+                    <div className="h-3 bg-gray-200 rounded w-16"></div>
+                    <div className="h-3 bg-gray-200 rounded w-12"></div>
+                    <div className="h-3 bg-gray-200 rounded w-14"></div>
+                  </div>
                 </div>
+
+                {/* Score Placeholder */}
+                <div className="shrink-0 self-start w-12 h-7 bg-gray-200 rounded-full"></div>
               </div>
             ))
           : data.map((song, i) => (
@@ -74,7 +91,7 @@ export default function RecommendationList({
                     {song.artist}
                   </p>
 
-                  <div className="text-gray-500 text-xs mt-1 flex gap-2 flex-wrap">
+                  <div className="text-gray-500 text-xs mt-1 flex gap-2 flex-wrap min-h-[16px]">
                     {song.album && <span>Album: {song.album}</span>}
                     {song.release_year && (
                       <span>Year: {song.release_year}</span>

@@ -28,15 +28,22 @@ export default function Home() {
   const perPage = 6;
 
   const cache = useRef<Record<string, Record<number, Recommendation[]>>>({});
+  const searchId = useRef(0);
 
   useEffect(() => {
+    let ignore = false;
     if (mode === "default") {
       setLoading(true);
       fetchSongs(page, perPage).then((songs) => {
-        setRecommendations(songs);
-        setLoading(false);
+        if (!ignore) {
+          setRecommendations(songs);
+          setLoading(false);
+        }
       });
     }
+    return () => {
+      ignore = true;
+    };
   }, [mode, page]);
 
   // Handler for search
@@ -45,15 +52,23 @@ export default function Home() {
     setSearchQuery(query);
     setPage(1);
     setLoading(true);
+    
+    const currentId = ++searchId.current;
     const data = await searchSongs(query); // No page/perPage
-    setRecommendations(data);
-    setLoading(false);
+    
+    if (searchId.current === currentId) {
+      setRecommendations(data);
+      setLoading(false);
+    }
   }
 
   // Handler for recommendations
   function handleRecommend(recs: Recommendation[], song?: string) {
     const songKey = song || (recs[0]?.track_name ?? null);
     if (!songKey) return;
+    
+    searchId.current++; // cancel pending searches
+    
     setSelectedSong(songKey);
     setMode("recommend");
     setPage(1);

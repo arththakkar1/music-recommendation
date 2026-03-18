@@ -27,8 +27,16 @@ export default function SongSearch({
   const [loading, setLoading] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const skipSearchRef = useRef(false);
 
   useEffect(() => {
+    let ignore = false;
+
+    if (skipSearchRef.current) {
+      skipSearchRef.current = false;
+      return;
+    }
+
     if (query.length < 2) {
       setResults([]);
       return;
@@ -37,12 +45,19 @@ export default function SongSearch({
     const run = async () => {
       setLoading(true);
       const data = await searchSongs(query);
-      setResults(data);
-      setLoading(false);
-      onSearch(query);
+      if (!ignore) {
+        setResults(data);
+        setLoading(false);
+      }
     };
 
-    run();
+    const timer = setTimeout(run, 300);
+
+    return () => {
+      ignore = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   useEffect(() => {
@@ -59,11 +74,17 @@ export default function SongSearch({
   }, []);
 
   async function handleSelect(song: string) {
+    skipSearchRef.current = true;
     setQuery(song);
     setResults([]);
     setIsFocused(false);
-    const res = await recommendSong(song);
-    onRecommend(res.recommendations || []);
+    setLoading(true);
+    try {
+      const res = await recommendSong(song);
+      onRecommend(res.recommendations || [], song);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -76,6 +97,12 @@ export default function SongSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && query.trim() !== "") {
+              setIsFocused(false);
+              onSearch(query);
+            }
+          }}
           placeholder="Search for a song you love…"
           className="w-full rounded-2xl px-14 py-5 text-lg bg-white text-gray-900 border border-black/10 focus:border-black/60 focus:ring-4 focus:ring-[#3A2A23]/20 outline-none transition-all"
         />

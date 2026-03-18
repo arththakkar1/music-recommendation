@@ -26,25 +26,76 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const perPage = 6;
+  const totalPages = 5;
 
   const cache = useRef<Record<string, Record<number, Recommendation[]>>>({});
   const searchId = useRef(0);
 
+  // Helper to fetch and cache page data
+  const fetchPageData = async (m: Mode, p: number, song: string | null) => {
+    const key = m === "default" ? "default" : song;
+    if (!key) return [];
+    
+    // Return from cache if available
+    if (cache.current[key]?.[p]) {
+      return cache.current[key][p];
+    }
+    
+    // Fetch from API
+    let data: Recommendation[] = [];
+    if (m === "default") {
+      data = await fetchSongs(p, perPage);
+    } else if (m === "recommend" && song) {
+      const res = await recommendSong(song, p, perPage);
+      data = res.recommendations || [];
+    }
+    
+    // Save to cache
+    cache.current[key] = { ...(cache.current[key] || {}), [p]: data };
+    return data;
+  };
+
+  // Main effect to load data when page, mode, or song changes
   useEffect(() => {
     let ignore = false;
-    if (mode === "default") {
-      setLoading(true);
-      fetchSongs(page, perPage).then((songs) => {
+    if (mode === "default" || mode === "recommend") {
+      const key = mode === "default" ? "default" : selectedSong;
+      if (!key) return;
+
+      const isCached = !!cache.current[key]?.[page];
+      if (!isCached) {
+        setLoading(true);
+      }
+      
+      fetchPageData(mode, page, selectedSong).then(data => {
         if (!ignore) {
-          setRecommendations(songs);
+          setRecommendations(data);
           setLoading(false);
         }
       });
     }
-    return () => {
-      ignore = true;
-    };
-  }, [mode, page]);
+    return () => { ignore = true; };
+  }, [mode, page, selectedSong]);
+
+  // Prefetching effect for next 2 pages
+  useEffect(() => {
+    if (mode === "default" || mode === "recommend") {
+      const key = mode === "default" ? "default" : selectedSong;
+      if (!key) return;
+      
+      const prefetch = async () => {
+        const nextPages = [page + 1, page + 2].filter(p => p <= totalPages && !cache.current[key]?.[p]);
+        for (const p of nextPages) {
+          try {
+            await fetchPageData(mode, p, selectedSong);
+          } catch (e) {
+            // ignore prefetch errors 
+          }
+        }
+      }
+      prefetch(); // kicks off background fetches implicitly
+    }
+  }, [mode, page, selectedSong]);
 
   // Handler for search
   async function handleSearch(query: string) {
@@ -54,7 +105,7 @@ export default function Home() {
     setLoading(true);
     
     const currentId = ++searchId.current;
-    const data = await searchSongs(query); // No page/perPage
+    const data = await searchSongs(query); 
     
     if (searchId.current === currentId) {
       setRecommendations(data);
@@ -67,52 +118,33 @@ export default function Home() {
     const songKey = song || (recs[0]?.track_name ?? null);
     if (!songKey) return;
     
-    searchId.current++; // cancel pending searches
+    searchId.current++; 
     
     setSelectedSong(songKey);
     setMode("recommend");
     setPage(1);
-    setRecommendations(recs);
-    cache.current[songKey] = { 1: recs };
+    
+    // Pre-hydrate cache with initial page 1 results so it loads instantly
+    cache.current[songKey] = { ...(cache.current[songKey] || {}), [1]: recs };
   }
 
-  async function handlePageChange(newPage: number) {
+  function handlePageChange(newPage: number) {
     setPage(newPage);
-    setLoading(true);
-
-    if (mode === "default") {
-      const songs = await fetchSongs(newPage, perPage);
-      setRecommendations(songs);
-    } else if (mode === "recommend" && selectedSong) {
-      const songCache = cache.current[selectedSong] || {};
-      if (songCache[newPage]) {
-        setRecommendations(songCache[newPage]);
-        setLoading(false);
-        return;
-      }
-      const res = await recommendSong(selectedSong, newPage, perPage);
-      setRecommendations(res.recommendations || []);
-      cache.current[selectedSong] = {
-        ...songCache,
-        [newPage]: res.recommendations || [],
-      };
-    }
-    // Remove search mode pagination
-    setLoading(false);
   }
 
   return (
-    <main className="max-w-4xl mx-auto py-16 px-4">
+    <main className="relative min-h-screen max-w-3xl mx-auto py-20 px-4 sm:px-6">
       <Header />
       <SongSearch
-        onRecommend={(recs, song) => handleRecommend(recs, song)}
-        onSearch={handleSearch} // Now only passes query
+        onRecommend={handleRecommend}
+        onSearch={handleSearch} 
       />
+      <div className="w-full border-t border-zinc-800/50 my-10 animate-fade-in [animation-delay:150ms] opacity-0" />
       <RecommendationList
         data={recommendations}
         onPageChange={handlePageChange}
         page={page}
-        totalPages={5}
+        totalPages={totalPages}
         loading={loading}
       />
     </main>

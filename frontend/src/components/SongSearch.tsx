@@ -88,10 +88,10 @@ export default function SongSearch({
   }
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-2xl mx-auto">
+    <div ref={containerRef} className="relative w-full max-w-xl mx-auto animate-fade-in opacity-0 [animation-delay:100ms] z-20">
       {/* Input */}
-      <div className="relative">
-        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#222222]" />
+      <div className="relative group">
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-zinc-300 transition-colors" />
 
         <input
           value={query}
@@ -104,34 +104,34 @@ export default function SongSearch({
             }
           }}
           placeholder="Search for a song you love…"
-          className="w-full rounded-2xl px-14 py-5 text-lg bg-white text-gray-900 border border-black/10 focus:border-black/60 focus:ring-4 focus:ring-[#3A2A23]/20 outline-none transition-all"
+          className="w-full rounded-2xl px-14 py-4 text-base bg-zinc-900/50 text-zinc-100 placeholder:text-zinc-500 border border-zinc-800 hover:border-zinc-700 focus:bg-zinc-900 focus:border-zinc-500 outline-none transition-all shadow-sm"
         />
 
         {loading && (
-          <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#7B3F00] animate-spin" />
+          <Loader2 className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 animate-spin" />
         )}
       </div>
 
       {/* Dropdown */}
       {isFocused && results.length > 0 && (
-        <div className="absolute left-0 right-0 mt-3 bg-white border border-black/10 rounded-2xl shadow-xl overflow-hidden z-50">
+        <div className="absolute left-0 right-0 mt-2 bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl overflow-hidden animate-fade-in">
           <ul className="max-h-80 overflow-y-auto scrollbar-none">
             {results.map((song, i) => (
               <li
                 key={i}
                 onClick={() => handleSelect(song.track_name)}
-                className="px-6 py-4 cursor-pointer hover:bg-purple-50 transition border-b last:border-none"
+                className="px-5 py-3 cursor-pointer hover:bg-zinc-800/50 transition-colors border-b border-zinc-800/50 last:border-none group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-[#3A2A23] flex items-center justify-center">
-                    <Search className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 rounded-lg bg-zinc-800/50 flex items-center justify-center">
+                    <Search className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-300" />
                   </div>
 
                   <div className="min-w-0">
-                    <p className="font-medium text-gray-900 truncate">
+                    <p className="font-medium text-zinc-200 text-sm truncate group-hover:text-white transition-colors">
                       {song.track_name}
                     </p>
-                    <p className="text-sm text-gray-600 truncate">
+                    <p className="text-xs text-zinc-500 truncate mt-0.5">
                       {song.artist}
                     </p>
                   </div>
@@ -144,15 +144,15 @@ export default function SongSearch({
 
       {/* Empty states */}
       {isFocused && loading && (
-        <div className="absolute mt-3 w-full bg-white rounded-2xl p-6 text-center shadow">
-          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 bg-[#7B3F00]" />
-          <p className="text-gray-500">Searching…</p>
+        <div className="absolute mt-2 w-full bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center shadow-xl animate-fade-in">
+          <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-zinc-500" />
+          <p className="text-zinc-500 text-sm">Searching…</p>
         </div>
       )}
 
       {isFocused && !loading && query.length >= 2 && results.length === 0 && (
-        <div className="absolute mt-3 w-full bg-white rounded-2xl p-6 text-center shadow">
-          <p className="text-gray-500">No results found</p>
+        <div className="absolute mt-2 w-full bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center shadow-xl animate-fade-in">
+          <p className="text-zinc-500 text-sm">No results found</p>
         </div>
       )}
     </div>

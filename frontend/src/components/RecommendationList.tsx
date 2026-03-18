@@ -1,4 +1,4 @@
-import { Music2, TrendingUp } from "lucide-react";
+import { Play } from "lucide-react";
 
 type Recommendation = {
   track_name: string;
@@ -26,127 +26,112 @@ export default function RecommendationList({
   const skeletons = Array.from({ length: 6 });
 
   return (
-    <div className="mt-10 w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto animate-fade-in opacity-0 [animation-delay:200ms] pb-10">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-[#3A2A23] flex items-center justify-center shadow-md">
-          <TrendingUp className="w-5 h-5 text-white" />
-        </div>
-        <h2 className="text-2xl font-bold text-gray-900">Recommended Songs</h2>
+      <div className="flex items-center justify-between mb-6 px-1">
+        <h2 className="text-xl font-medium tracking-tight text-zinc-100">
+          Recommendations
+        </h2>
       </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Table Headers */}
+      <div className="grid grid-cols-[3rem_1fr_4rem] sm:grid-cols-[3rem_2fr_1fr_4rem] gap-4 px-3 py-2 border-b border-zinc-800 text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">
+        <div className="text-center">#</div>
+        <div>Title</div>
+        <div className="hidden sm:block">Album</div>
+        <div className="text-right">Match</div>
+      </div>
+
+      {/* List */}
+      <div className="relative z-10 flex flex-col gap-1">
         {loading
           ? skeletons.map((_, i) => (
               <div
                 key={i}
-                className="
-                  animate-pulse bg-white rounded-2xl p-5 py-7 flex gap-4
-                  shadow-sm
-                "
+                className="animate-pulse grid grid-cols-[3rem_1fr_4rem] sm:grid-cols-[3rem_2fr_1fr_4rem] gap-4 items-center px-3 py-3 rounded-lg"
               >
-                {/* Icon Placeholder */}
-                <div className="w-12 h-12 rounded-xl bg-gray-200 shrink-0"></div>
-
-                {/* Content Placeholder */}
-                <div className="flex-1 min-w-0 space-y-3 mt-1">
-                  {/* Title Placeholder */}
-                  <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-                  {/* Artist Placeholder */}
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-
-                  {/* Tags Placeholder */}
-                  <div className="flex gap-2 flex-wrap mt-2">
-                    <div className="h-3 bg-gray-200 rounded w-16"></div>
-                    <div className="h-3 bg-gray-200 rounded w-12"></div>
-                    <div className="h-3 bg-gray-200 rounded w-14"></div>
-                  </div>
+                <div className="mx-auto w-4 h-4 bg-zinc-800 rounded"></div>
+                <div className="flex flex-col gap-2">
+                  <div className="h-4 bg-zinc-800 rounded w-2/3"></div>
+                  <div className="h-3 bg-zinc-800 rounded w-1/3"></div>
                 </div>
-
-                {/* Score Placeholder */}
-                <div className="shrink-0 self-start w-12 h-7 bg-gray-200 rounded-full"></div>
+                <div className="hidden sm:block">
+                  <div className="h-3 bg-zinc-800 rounded w-1/2"></div>
+                </div>
+                <div className="ml-auto w-8 h-4 bg-zinc-800 rounded"></div>
               </div>
             ))
           : data.map((song, i) => (
               <div
                 key={i}
-                className="
-                  bg-white rounded-2xl p-5 flex gap-4 cursor-pointer
-                  shadow-sm hover:shadow-xl hover:-translate-y-1
-                  transition-all
-                "
+                className="group grid grid-cols-[3rem_1fr_4rem] sm:grid-cols-[3rem_2fr_1fr_4rem] gap-4 items-center px-3 py-2.5 hover:bg-zinc-900/80 rounded-lg cursor-pointer transition-colors animate-fade-in opacity-0"
+                style={{ animationDelay: `${i * 50}ms` }}
               >
-                {/* Icon */}
-                <div className="w-12 h-12 rounded-xl bg-[#3A2A23] flex items-center justify-center shrink-0">
-                  <Music2 className="w-6 h-6 text-white" />
+                {/* Index / Play action */}
+                <div className="flex justify-center items-center w-full">
+                  <span className="text-zinc-500 text-sm group-hover:hidden">
+                    {(page - 1) * 6 + i + 1}
+                  </span>
+                  <Play className="w-4 h-4 text-zinc-100 hidden group-hover:block transition-colors" />
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 text-lg truncate">
+                <div className="min-w-0 pr-2">
+                  <h3 className="font-medium text-zinc-200 text-sm truncate group-hover:text-white transition-colors">
                     {song.track_name}
                   </h3>
-                  <p className="text-gray-600 text-sm truncate">
-                    {song.artist}
-                  </p>
-
-                  <div className="text-gray-500 text-xs mt-1 flex gap-2 flex-wrap min-h-[16px]">
-                    {song.album && <span>Album: {song.album}</span>}
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="text-zinc-500 text-xs truncate">
+                      {song.artist}
+                    </p>
+                    {/* Only show year inline on very small screens, otherwise it's in the album col or just omitted */}
                     {song.release_year && (
-                      <span>Year: {song.release_year}</span>
-                    )}
-                    {song.genre && <span>Genre: {song.genre}</span>}
-                    {song.popularity !== undefined && (
-                      <span>Popularity: {song.popularity}</span>
+                      <span className="text-zinc-700 text-[10px] sm:hidden">• {song.release_year}</span>
                     )}
                   </div>
                 </div>
 
+                {/* Album / Extra info */}
+                <div className="hidden sm:block min-w-0 pr-2">
+                  <p className="text-zinc-500 text-sm truncate hover:text-zinc-400 transition-colors">
+                    {song.album || song.genre || "Single"}
+                  </p>
+                </div>
+
                 {/* Score */}
-                {song.score !== undefined &&
-                  (() => {
-                    const score = Math.round(song.score * 100);
-
-                    const color =
-                      score >= 96
-                        ? "bg-green-100 text-green-700"
-                        : score >= 60
-                        ? "bg-yellow-100 text-yellow-700"
-                        : "bg-red-100 text-red-700";
-
-                    return (
-                      <div
-                        className={`shrink-0 self-start px-3 py-1 rounded-full text-sm font-semibold ${color}`}
-                      >
-                        {score}%
-                      </div>
-                    );
-                  })()}
+                <div className="text-right">
+                  {song.score !== undefined ? (
+                    <span className="text-zinc-400 text-sm font-medium tabular-nums group-hover:text-zinc-300 transition-colors">
+                      {Math.round(song.score * 100)}%
+                    </span>
+                  ) : (
+                    <span className="text-zinc-600">-</span>
+                  )}
+                </div>
               </div>
             ))}
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-8 gap-3">
+      <div className="flex justify-between items-center mt-6 px-3">
         <button
-          className="px-4 py-1.5 rounded-full bg-[#3A2A23] text-white cursor-pointer disabled:opacity-40"
+           className="text-xs font-medium text-zinc-500 hover:text-zinc-200 transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1 || loading}
         >
-          Prev
+          &larr; Previous
         </button>
 
-        <span className="px-3 py-1 text-gray-600 text-sm">
-          Page {page} of {totalPages}
+        <span className="text-xs text-zinc-600 font-medium tracking-wide">
+          {page} / {totalPages}
         </span>
 
         <button
-          className="px-4 py-1.5 rounded-full bg-[#3A2A23] cursor-pointer text-white disabled:opacity-40"
+           className="text-xs font-medium text-zinc-500 hover:text-zinc-200 transition-colors disabled:opacity-30 disabled:hover:text-zinc-500 cursor-pointer"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages || loading}
         >
-          Next
+          Next &rarr;
         </button>
       </div>
     </div>
